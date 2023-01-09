@@ -8,6 +8,14 @@ class	School(models.Model):
 	school_email = models.CharField(max_length=100)
 	school_website = models.CharField(max_length=100)
 
-class	HeadMaster(models.Model):
-	pass
+# class	HeadMaster(models.Model):
+# 	headmaster_name = models.CharField(max_length=100)
+# 	headmaster_phone = models.CharField(max_length=10)
+# 	headmaster_email = models.CharField(max_length=100)
+# 	headmaster_school = models.ForeignKey(School, on_delete=models.CASCADE)
+
+# class	Teacher(models.Model):
+# 	Teacher_name = models.CharField(max_length=100)
+# 	Teacher_phone = models.CharField(max_length=10)
+# 	Teacher_email = models.CharField(max_length=100)
 

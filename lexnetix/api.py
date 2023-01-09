@@ -1,15 +1,13 @@
 from ninja import Router
+from typing import List
+from .schemas import SchoolOut
+from .models import School
+import json
 
 router = Router()
 
-@router.get('school/{int:id}')
+@router.get('school/', response=List[SchoolOut])
 
-def	school(request, id : int):
-	data = {
-		'Name': 'Nakhon Sawan',
-		'id' : 1,
-	}
-	# print(type(id))
-	if data['id'] == id:
-		return data
-	return {'error': 'Not found'}
+def	School_list(request):
+	qs = School.objects.all()
+	return qs
