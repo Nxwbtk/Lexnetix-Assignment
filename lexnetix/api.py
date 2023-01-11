@@ -1,7 +1,7 @@
 from ninja import Router
 from typing import List
-from .schemas import SchoolOut, School_one
-from .models import School
+from .schemas import SchoolOut, School_one, Headmaster_Out
+from .models import School, HeadMaster, Contact_Staff
 import json
 
 router = Router()
@@ -17,4 +17,11 @@ def	School_one(request, name):
 
 	if list(sc) != []:
 		return School.objects.filter(school_name=name)
+	return [{}]
+
+@router.get('schools/headmaster/{name}', response=List[Headmaster_Out])
+def	Headmaster_list(request, name):
+	hm = HeadMaster.objects.filter(headmaster_name=name)
+	if list(hm) != []:
+		return hm
 	return [{}]
