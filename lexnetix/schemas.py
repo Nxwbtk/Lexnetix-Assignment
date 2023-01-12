@@ -1,5 +1,10 @@
 from ninja import ModelSchema
-from .models import School, HeadMaster, Teacher
+from .models import (
+	School,
+	HeadMaster,
+	Teacher,
+	Stu
+	)
 
 class	SchoolOut(ModelSchema):
 	class	Config:
@@ -41,3 +46,33 @@ class	Teacher_list(ModelSchema):
 		model = Teacher
 		model_fields = ['teacher_name']
 	teacher_name : str = 'NULL'
+
+class	StudentOut(ModelSchema):
+	class	Config:
+		model = Stu
+		model_fields = ['stu_fname', 'stu_lname']
+	stu_fname : str = 'NULL'
+	stu_lname : str = 'NULL'
+
+class	Student_list(ModelSchema):
+	class	Config:
+		model = Stu
+		model_fields = ['stu_id']
+	stu_fname : str = 'NULL'
+	stu_lname : str = 'NULL'
+	stu_id : str = 'NULL'
+	stu_phone : str = 'NULL'
+	stu_email : str = 'NULL'
+	stu_sc : SchoolOut = 'NULL'
+
+## POST
+class	School_post(ModelSchema):
+	class	Config:
+		model = School
+		model_fields = ['school_id', 'school_name', 'school_phone', 'school_address', 'school_email', 'school_website']
+	school_id : str = 'NULL'
+	school_name : str = 'NULL'
+	school_phone : str = 'NULL'
+	school_address : str = 'NULL'
+	school_email : str = 'NULL'
+	school_website : str = 'NULL'

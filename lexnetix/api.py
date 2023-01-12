@@ -1,10 +1,26 @@
 from ninja import Router
 from typing import List
-from .schemas import SchoolOut, School_one, Headmaster_Out, TeacherOut, Teacher_list
-from .models import School, HeadMaster, Teacher
+from .schemas import (
+	SchoolOut,
+	School_one,
+	Headmaster_Out,
+	TeacherOut,
+	Teacher_list,
+	School_post,
+	StudentOut,
+	Student_list
+)
+from .models import (
+	School,
+	HeadMaster,
+	Teacher,
+	Stu,
+)
 import json
 
 router = Router()
+
+## GET
 
 @router.get('schools/', response=List[SchoolOut])
 def	School_list(request):
@@ -40,9 +56,37 @@ def	Teacher_one(request, id):
 		return Teacher.objects.filter(teacher_id=id)
 	return [{}]
 
-@router.get('schools/teacher', response=List[Teacher_list])
+@router.get('schools/teacher/', response=List[Teacher_list])
 def	Teacher_one(request):
 	tc = Teacher.objects.all()
 	if list(tc) != []:
 		return tc
 	return [{}]
+
+@router.get('school/students', response=List[StudentOut])
+def	StudentList(request):
+	dek = Stu.objects.all()
+	if list(dek) != []:
+		return dek
+	return [{}]
+
+@router.get('school/{sc}/students/{id}', response=List[Student_list])
+def	StudentDetail(request, id, sc):
+	dek = Stu.objects.filter(stu_id=id)
+	if list(dek) != []:
+		return dek
+	return [{}]
+## POST
+
+@router.post('schools/add', response=List[School_post])
+def	School_post(request):
+	body_unicode = request.body.decode('utf-8')
+	body = json.loads(body_unicode)
+	try:
+		sc = School.objects.create(school_id=body['school_id'], school_name=body['school_name'], school_phone=body['school_phone'], school_address=body['school_address'], school_email=body['school_email'], school_website=body['school_website'])
+		sc.save()
+		data = School.objects.filter(school_id=body['school_id'])
+		return data
+	except:
+		return [{}]
+
