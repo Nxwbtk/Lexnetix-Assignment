@@ -20,7 +20,6 @@ class	School_one(ModelSchema):
 	school_name : str = 'NULL'
 	school_phone : str = 'NULL'
 	school_address : str = 'NULL'
-	zipcode : str = 'NULL'
 	school_email : str = 'NULL'
 	school_website : str = 'NULL'
 
@@ -63,7 +62,7 @@ class	Student_list(ModelSchema):
 	stu_id : str = 'NULL'
 	stu_phone : str = 'NULL'
 	stu_email : str = 'NULL'
-	stu_sc : SchoolOut = 'NULL'
+	stu_sc : School_one = 'NULL'
 
 ## POST
 class	School_post(ModelSchema):

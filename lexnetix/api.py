@@ -16,6 +16,7 @@ from .models import (
 	Teacher,
 	Stu,
 )
+from django.core import serializers
 import json
 
 router = Router()
@@ -72,9 +73,12 @@ def	StudentList(request):
 
 @router.get('school/{sc}/students/{id}', response=List[Student_list])
 def	StudentDetail(request, id, sc):
-	dek = Stu.objects.filter(stu_id=id)
-	if list(dek) != []:
-		return dek
+	sc_id = School.objects.all()
+	for x in sc_id:
+		if x.school_id == sc:
+			dek = Stu.objects.filter(stu_id=id)
+			if list(dek) != []:
+				return dek
 	return [{}]
 ## POST
 
@@ -82,6 +86,8 @@ def	StudentDetail(request, id, sc):
 def	School_post(request):
 	body_unicode = request.body.decode('utf-8')
 	body = json.loads(body_unicode)
+	if School.objects.filter(school_id=body['school_id']).exists() == True:
+		return School.objects.filter(school_id=body['school_id'])
 	try:
 		sc = School.objects.create(school_id=body['school_id'], school_name=body['school_name'], school_phone=body['school_phone'], school_address=body['school_address'], school_email=body['school_email'], school_website=body['school_website'])
 		sc.save()
