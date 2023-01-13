@@ -1,4 +1,4 @@
-from ninja import Router
+from ninja import Router, NinjaAPI
 from typing import List
 from .schemas import (
 	SchoolOut,
@@ -8,19 +8,21 @@ from .schemas import (
 	Teacher_list,
 	School_post,
 	StudentOut,
-	Student_list
+	Student_list,
+	ClassOut,
+	Headmaster_post
 )
 from .models import (
 	School,
 	HeadMaster,
 	Teacher,
 	Stu,
+	Classes
 )
 from django.core import serializers
 import json
 
 router = Router()
-
 ## GET
 
 @router.get('schools/', response=List[SchoolOut])
@@ -31,7 +33,7 @@ def	School_list(request):
 @router.get('schools/{id}/', response=List[School_one])
 def	School_one(request, id):
 	sc = School.objects.filter(school_id=id)
-
+	# print("hey")
 	if list(sc) != []:
 		return School.objects.filter(school_id=id)
 	return [{}]
@@ -50,14 +52,14 @@ def	Headmaster_list(request):
 		return hm
 	return [{}]
 
-@router.get('schools/teacher/{id}', response=List[TeacherOut])
+@router.get('schools/teacher/list/{id}', response=List[TeacherOut])
 def	Teacher_one(request, id):
 	tc = Teacher.objects.filter(teacher_id=id)
 	if list(tc) != []:
 		return Teacher.objects.filter(teacher_id=id)
 	return [{}]
 
-@router.get('schools/teacher/', response=List[Teacher_list])
+@router.get('schools/teacher/list', response=List[Teacher_list])
 def	Teacher_one(request):
 	tc = Teacher.objects.all()
 	if list(tc) != []:
@@ -84,6 +86,15 @@ def	StudentDetail(request, id, sc):
 			if list(dek) != []:
 				return dek
 	return [{}]
+
+@router.get('school/{sc_id}/classes', response=List[ClassOut])
+def	ClassList(request, sc_id):
+	dek = Classes.objects.all()
+	for x in dek:
+		res = Classes.objects.filter(class_sc__school_id=sc_id)
+		if list(res) != []:
+			return res
+		return [{}]
 ## POST
 
 @router.post('schools/add', response=List[School_post])
@@ -99,4 +110,25 @@ def	School_post(request):
 		return data
 	except:
 		return [{}]
+
+@router.post('school/headmaster/add', response=List[Headmaster_post])
+def	Headmaster_post(request):
+	body_unicode = request.body.decode('utf-8')
+	body = json.loads(body_unicode)
+	if HeadMaster.objects.filter(headmaster_name=body['headmaster_name']).exists() == True:
+		return HeadMaster.objects.filter(headmaster_name=body['headmaster_name'])
+	try:
+		hm = HeadMaster.objects.create(headmaster_name=body['headmaster_name'])
+		print(hm)
+		hm.save()
+		data = HeadMaster.objects.filter(headmaster_name=body['headmaster_name'])
+		return data
+	except:
+		return [{}]
+# api = NinjaAPI()
+# @router.post('school/headmaster/add')
+# def create_data(request, item: Headmaster_post):
+# 	# print(item.dict())
+# 	test = HeadMaster.objects.create(item.dict())
+# 	return [{}]
 

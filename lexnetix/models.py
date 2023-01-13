@@ -27,3 +27,10 @@ class	Stu(models.Model):
 	stu_phone = models.CharField(max_length=10)
 	stu_email = models.CharField(max_length=100)
 	stu_sc = models.ForeignKey(School, on_delete=models.CASCADE)
+	stu_class = models.ForeignKey('Classes', on_delete=models.CASCADE, null=True)
+
+class	Classes(models.Model):
+	class_id = models.CharField(max_length=10, primary_key=True)
+	class_name = models.CharField(max_length=100)
+	class_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+	class_sc = models.ForeignKey(School, on_delete=models.CASCADE)

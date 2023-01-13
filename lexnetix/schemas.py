@@ -1,10 +1,13 @@
-from ninja import ModelSchema
+from ninja import ModelSchema, Schema
 from .models import (
 	School,
 	HeadMaster,
 	Teacher,
-	Stu
+	Stu,
+	Classes
 	)
+from ninja.orm import create_schema
+# from  import serializers
 
 class	SchoolOut(ModelSchema):
 	class	Config:
@@ -53,6 +56,14 @@ class	StudentOut(ModelSchema):
 	stu_fname : str = 'NULL'
 	stu_lname : str = 'NULL'
 
+class	ClassOut(ModelSchema):
+	class	Config:
+		model = Classes
+		model_fields = ['class_id']
+	class_id : str = 'NULL'
+	class_name : str = 'NULL'
+	class_teacher : Teacher_list = 'NULL'
+
 class	Student_list(ModelSchema):
 	class	Config:
 		model = Stu
@@ -62,7 +73,9 @@ class	Student_list(ModelSchema):
 	stu_id : str = 'NULL'
 	stu_phone : str = 'NULL'
 	stu_email : str = 'NULL'
-	stu_sc : School_one = 'NULL'
+	stu_sc : SchoolOut = 'NULL'
+	stu_class : ClassOut  = 'NULL'
+
 
 ## POST
 class	School_post(ModelSchema):
@@ -75,3 +88,14 @@ class	School_post(ModelSchema):
 	school_address : str = 'NULL'
 	school_email : str = 'NULL'
 	school_website : str = 'NULL'
+
+class	School_id_in(ModelSchema):
+	class	Config:
+		model = School
+		model_fields = School_post.Config.model_fields
+
+Headmaster_post = create_schema(HeadMaster, fields=['headmaster_name', 'headmaster_school'])
+
+# class	Headmaster_post(Schema):
+# 	headmaster_name : str
+# 	# headmaster_school : School_one
