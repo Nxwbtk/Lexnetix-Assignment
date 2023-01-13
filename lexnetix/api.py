@@ -64,11 +64,15 @@ def	Teacher_one(request):
 		return tc
 	return [{}]
 
-@router.get('school/students', response=List[StudentOut])
-def	StudentList(request):
+@router.get('school/{sc_id}/students', response=List[StudentOut])
+def	StudentList(request, sc_id):
 	dek = Stu.objects.all()
-	if list(dek) != []:
-		return dek
+	# test = {}
+	for x in dek:
+		print(x.stu_sc.school_id)
+		res = Stu.objects.filter(stu_sc__school_id=sc_id)
+	if list(res) != []:
+		return res
 	return [{}]
 
 @router.get('school/{sc}/students/{id}', response=List[Student_list])
