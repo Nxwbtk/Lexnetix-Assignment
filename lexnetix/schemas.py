@@ -12,19 +12,7 @@ from ninja.orm import create_schema
 class	SchoolOut(ModelSchema):
 	class	Config:
 		model = School
-		model_fields = ['school_name']
-	school_name : str = 'NULL'
-
-class	School_one(ModelSchema):
-	class	Config:
-		model = School
-		model_fields = ['school_id']
-	school_id : str = 'NULL'
-	school_name : str = 'NULL'
-	school_phone : str = 'NULL'
-	school_address : str = 'NULL'
-	school_email : str = 'NULL'
-	school_website : str = 'NULL'
+		model_fields = "__all__"
 
 class	Headmaster_Out(ModelSchema):
 	class	Config:
@@ -78,24 +66,21 @@ class	Student_list(ModelSchema):
 
 
 ## POST
-class	School_post(ModelSchema):
-	class	Config:
-		model = School
-		model_fields = ['school_id', 'school_name', 'school_phone', 'school_address', 'school_email', 'school_website']
-	school_id : str = 'NULL'
-	school_name : str = 'NULL'
-	school_phone : str = 'NULL'
-	school_address : str = 'NULL'
-	school_email : str = 'NULL'
-	school_website : str = 'NULL'
+class	SchoolIn(Schema):
+	school_name : str
+	school_address : str
+	school_phone : str = None
+	school_email : str = None
+	school_website : str = None
 
-class	School_id_in(ModelSchema):
-	class	Config:
-		model = School
-		model_fields = School_post.Config.model_fields
+class	HeadmasterIn(Schema):
+	headmaster_name : str
+	headmaster_id : str
 
-Headmaster_post = create_schema(HeadMaster, fields=['headmaster_name', 'headmaster_school'])
+# class	School_id_in(ModelSchema):
+# 	class	Config:
+# 		model = School
+# 		model_fields = School_post.Config.model_fields
 
-# class	Headmaster_post(Schema):
-# 	headmaster_name : str
-# 	# headmaster_school : School_one
+# Headmaster_post = create_schema(HeadMaster, fields=['headmaster_name', 'headmaster_school'])
+
