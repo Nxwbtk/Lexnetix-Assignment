@@ -10,7 +10,8 @@ from .schemas import (
 	StudentOut,
 	Student_list,
 	ClassOut,
-	HeadmasterIn
+	HeadmasterIn,
+	TeacherIn
 )
 from .models import (
 	School,
@@ -23,7 +24,10 @@ from django.core import serializers
 import json
 
 router = Router()
-## GET
+
+##################
+##### School #####
+##################
 
 @router.get('schools', response=List[SchoolOut])
 def	list_school(request):
@@ -43,10 +47,11 @@ def	post_school(request, payload : SchoolIn = Form(...)):
 		"details": "School posted successfully",
 		"model": SchoolOut.from_orm(school)
 	}
-
+# PUT broken
 @router.put('school/{str:id}', response=dict)
 def	put_school(request, id : str, payload : SchoolIn = Form(...)):
 	try:
+		print(payload.dict())
 		school = get_object_or_404(School, id=id)
 		for key, value in payload.dict().items():
 			setattr(school, key, value)
@@ -81,20 +86,56 @@ def	delete_school(request, id : str):
 	except:
 		return { "details": "School not found" }
 
+##################
+### Headmaster ###
+##################
+
 @router.get('schools/headmaster/', response=List[Headmaster_Out])
 def	Headmaster_list(request):
 	return [Headmaster_Out.from_orm(hm) for hm in HeadMaster.objects.all()]
 
-@router.post('schools/headmaster/add', response={ 200 : dict, 404 : dict })
+@router.post('schools/headmaster/add', response=dict)
 def	headmaster_post(request, payload : HeadmasterIn = Form(...)):
-	# test = get_object_or_404(School, school_id=payload.school_id)
 	try:
-		print(" :(( ")
-		HeadMaster.objects.create(**payload.dict())
-		return 200, { 'details' : 'Headmaster posted successfully' }
+		for x in School.objects.all():
+			if x.id == int((payload.dict())['school_id']):
+				data = { 'headmaster_name' : (payload.dict())['headmaster_name'], 'headmaster_school' : x }
+				mode = HeadMaster.objects.create(**data)
+				return { "details": "Headmaster posted successfully",
+					"model": Headmaster_Out.from_orm(mode) }
 	except:
-		return 404, { 'details' : 'not found' }
+			return { "details": "Headmaster posted Failed" }
 
+###################
+##### Teacher #####
+###################
+
+@router.get('schools/teacher/list', response=List[TeacherOut])
+def	teacher_list(request):
+	return [TeacherOut.from_orm(tc) for tc in Teacher.objects.all()]
+
+@router.post('schools/teacher/add', response=dict)
+def	teacher_post(request, payload : TeacherIn = Form(...)):
+	try:
+		for x in School.objects.all():
+			if x.id == int((payload.dict())['school_id']):
+				data = { 'teacher_name' : (payload.dict())['teacher_name'], 'teacher_id' : (payload.dict())['teacher_id'], 'teacher_phone' : (payload.dict())['teacher_phone'], 'teacher_email' : (payload.dict())['teacher_email'], 'teacher_school' : x }
+				mode = Teacher.objects.create(**data)
+				return { "details": "Teacher posted successfully",
+					"model": TeacherOut.from_orm(mode) }
+	except:
+			return { "details": "Teacher posted Failed" }
+# @router.put('schools/headmaster/put/{int:id}', response={ 200 : dict, 404 : dict})
+# def	headmaster_put(request, id, payload : HeadmasterIn = Form(...)):
+# 	try:
+# 		hm = HeadMaster.objects.get(id=id)
+# 		for att, val in payload.dict().items():
+# 			setattr(hm, att, val)
+# 		hm.save()
+# 		print(hm)
+# 		return 200, { 'status' : 'Done' }
+# 	except:
+# 		return 404, { 'error' : 'Can\'t put' }
 
 # @router.get('schools/headmaster/{name}', response=List[Headmaster_Out])
 # def	Headmaster_list(request, name):

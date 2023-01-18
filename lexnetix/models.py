@@ -14,11 +14,11 @@ class	HeadMaster(models.Model):
 	headmaster_school = models.OneToOneField(School, on_delete=models.CASCADE)
 
 class	Teacher(models.Model):
-	teacher_id = models.CharField(max_length=5)
-	teacher_name = models.CharField(max_length=100)
-	teacher_phone = models.CharField(max_length=10)
-	teacher_email = models.CharField(max_length=100, default='teacher@gmail.com')
-	teacher_school = models.ForeignKey(School, on_delete=models.CASCADE)
+	teacher_id = models.CharField(max_length=5, blank=True, null=True)
+	teacher_name = models.CharField(max_length=100, blank=True)
+	teacher_phone = models.CharField(max_length=10, blank=True, null=True)
+	teacher_email = models.CharField(max_length=100, default='teacher@gmail.com', blank=True, null=True)
+	teacher_school = models.ForeignKey(School, on_delete=models.CASCADE, blank=True)
 
 class	Stu(models.Model):
 	stu_id = models.CharField(max_length=10)

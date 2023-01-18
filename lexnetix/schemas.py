@@ -7,7 +7,7 @@ from .models import (
 	Classes
 	)
 from ninja.orm import create_schema
-# from  import serializers
+
 
 class	SchoolOut(ModelSchema):
 	class	Config:
@@ -25,11 +25,11 @@ class	TeacherOut(ModelSchema):
 	class	Config:
 		model = Teacher
 		model_fields = ['teacher_name']
-	teacher_name : str = 'NULL'
-	teacher_id : str = 'NULL'
-	teacher_phone : str = 'NULL'
-	teacher_email : str = 'NULL'
-	teacher_school : SchoolOut = 'NULL'
+	teacher_name : str = None
+	teacher_id : str = None
+	teacher_phone : str = None
+	teacher_email : str = None
+	teacher_school : SchoolOut = None
 
 class	Teacher_list(ModelSchema):
 	class	Config:
@@ -67,6 +67,7 @@ class	Student_list(ModelSchema):
 
 ## POST
 class	SchoolIn(Schema):
+	school_id : str = None
 	school_name : str
 	school_address : str
 	school_phone : str = None
@@ -75,7 +76,15 @@ class	SchoolIn(Schema):
 
 class	HeadmasterIn(Schema):
 	headmaster_name : str
-	headmaster_id : str
+	school_id : str
+
+class	TeacherIn(Schema):
+	teacher_id : str = None
+	teacher_name : str
+	teacher_phone : str = None
+	teacher_email : str = None
+	school_id : str
+
 
 # class	School_id_in(ModelSchema):
 # 	class	Config:
