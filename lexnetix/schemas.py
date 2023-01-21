@@ -34,12 +34,35 @@ class	InfoOut(ModelSchema):
 class	ClassOut(ModelSchema):
 	class	Config:
 		model = Classes
-		model_fields = ['class_name']
+		model_fields = ['class_name', 'class_sc']
 	class_name : str = None
+	class_sc : SchoolOne = None
 
 class	TeacherOut(ModelSchema):
 	# teacher_info : InfoOut = Field("member_info", alias="")
 	class Config:
+		model = Member
+		model_fields = ['id', 'member_info']
+	id : int
+	member_info : InfoOut = None
+	classes : ClassOut = None
+	member_school : SchoolOne = None
+
+class	NameMember(ModelSchema):
+	class	Config:
+		model = Info
+		model_fields = ['info_name']
+	info_name : str = None
+
+class	StudentList(ModelSchema):
+	class	Config:
+		model = Member
+		model_fields = ['id']
+	id : int
+	member_info : NameMember = None
+
+class	StudentOut(ModelSchema):
+	class	Config:
 		model = Member
 		model_fields = ['id', 'member_info']
 	id : int

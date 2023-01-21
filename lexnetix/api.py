@@ -7,8 +7,8 @@ from .schemas import (
 	TeacherOut,
 # 	Teacher_list,
 	SchoolIn,
-# 	StudentOut,
-# 	Student_list,
+	# StudentOut,
+	StudentList,
 # 	ClassOut,
 	HeadmasterIn,
 	HeadmasterUpdate,
@@ -120,6 +120,7 @@ def	headmaster_put(request, headmaster_id : int, payload : HeadmasterUpdate):
 	except:
 		return { "Status": "Headmaster updated Failed" }
 
+# waiting for patch method
 # @router.patch()
 
 @router.delete('schools/headmaster/delete/{int:headmaster_id}', response=dict)
@@ -156,4 +157,21 @@ def	teacher_delete(request, teacher_id : int):
 ##### Student #####
 ###################
 
-# @router.get('schools/student/get', response=List[StudentOut])
+@router.get('schools/student/get', response=List[StudentList])
+def	Student_List(request):
+	return [StudentList.from_orm(st) for st in Member.objects.filter(member_role=2)]
+
+@router.get('schools/{int:sc_id}/student/get/', response=List[StudentList])
+def	Student_List(request, sc_id : int):
+	sl = Member.objects.filter(member_role=2, member_school_id=sc_id)
+	return [StudentList.from_orm(st) for st in sl]
+
+@router.delete('schools/student/delete/{int:student_id}', response=dict)
+def	student_delete(request, student_id : int):
+	try:
+		st = get_object_or_404(Member, id=student_id)
+		st.delete()
+		return { "Status": "Student deleted successfully" }
+	except:
+		return { "Status": "Student deleted Failed" }
+
