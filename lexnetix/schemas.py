@@ -1,10 +1,10 @@
-from ninja import ModelSchema, Schema
+from ninja import ModelSchema, Schema, Field
 from .models import (
 	School,
-# 	HeadMaster,
-# 	Teacher,
-# 	Stu,
-# 	Classes
+	HeadMaster,
+	Member,
+	Info,
+	Classes
 	)
 # from ninja.orm import create_schema
 
@@ -14,13 +14,38 @@ class	SchoolOut(ModelSchema):
 		model = School
 		model_fields = "__all__"
 
-# class	Headmaster_Out(ModelSchema):
-# 	class	Config:
-# 		model = HeadMaster
-# 		model_fields = ['headmaster_name']
-# 	headmaster_name : str = 'NULL'
-# 	headmaster_school : SchoolOut = 'NULL'
+class	SchoolOne(ModelSchema):
+	class	Config:
+		model = School
+		model_fields = ['school_name']
 
+class	Headmaster_Out(ModelSchema):
+	class	Config:
+		model = HeadMaster
+		model_fields = "__all__"
+	headmaster_name : str = 'NULL'
+	headmaster_school : SchoolOut = 'NULL'
+
+class	InfoOut(ModelSchema):
+	class	Config:
+		model = Info
+		model_fields = ['info_name', 'info_phone', 'info_email']
+
+class	ClassOut(ModelSchema):
+	class	Config:
+		model = Classes
+		model_fields = ['class_name']
+	class_name : str = None
+
+class	TeacherOut(ModelSchema):
+	# teacher_info : InfoOut = Field("member_info", alias="")
+	class Config:
+		model = Member
+		model_fields = ['id', 'member_info']
+	id : int
+	member_info : InfoOut = None
+	classes : ClassOut = None
+	member_school : SchoolOne = None
 # class	TeacherOut(ModelSchema):
 # 	class	Config:
 # 		model = Teacher
@@ -73,9 +98,13 @@ class	SchoolIn(Schema):
 	school_email : str = None
 	school_website : str = None
 
-# class	HeadmasterIn(Schema):
-# 	headmaster_name : str
-# 	school_id : str
+class	HeadmasterIn(Schema):
+	headmaster_name : str
+	school_id : str
+
+class	HeadmasterUpdate(Schema):
+	headmaster_name : str
+	school_id : int
 
 # class	TeacherIn(Schema):
 # 	teacher_id : str = None

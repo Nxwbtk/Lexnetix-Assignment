@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class	School(models.Model):
 	school_name = models.CharField(max_length=100)
-	school_address = models.CharField(max_length=100)
+	school_address = models.CharField(max_length=100, null=True, blank=True)
 	school_phone = models.CharField(max_length=10, null=True, blank=True)
 	school_email = models.CharField(max_length=100, null=True, blank=True)
 	school_website = models.CharField(max_length=100, null=True, blank=True)
@@ -26,6 +26,6 @@ class	Classes(models.Model):
 class	Member(models.Model):
 	member_info = models.OneToOneField(Info, on_delete=models.CASCADE)
 	member_school = models.ForeignKey(School, on_delete=models.CASCADE)
-	member_role = models.CharField(max_length=100)
+	member_role = models.IntegerField(default=0)
 	classes = models.ManyToManyField(Classes, blank=True)
 

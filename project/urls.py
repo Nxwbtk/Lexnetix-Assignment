@@ -16,10 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from ninja import NinjaAPI
-from lexnetix.api import router as lex_rout
+from lexnetix.api import router as lex_router
 
 api = NinjaAPI()
-api.add_router('', lex_rout)
+api.add_router('', lex_router)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
