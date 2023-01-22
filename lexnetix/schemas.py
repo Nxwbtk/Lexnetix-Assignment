@@ -31,6 +31,11 @@ class	InfoOut(ModelSchema):
 		model = Info
 		model_fields = ['info_name', 'info_phone', 'info_email']
 
+class	InfoOne(ModelSchema):
+	class	Config:
+		model = Info
+		model_fields = "__all__"
+
 class	ClassOut(ModelSchema):
 	class	Config:
 		model = Classes
@@ -45,7 +50,6 @@ class	TeacherOut(ModelSchema):
 		model_fields = ['id', 'member_info']
 	id : int
 	member_info : InfoOut = None
-	classes : ClassOut = None
 	member_school : SchoolOne = None
 
 class	NameMember(ModelSchema):
@@ -67,50 +71,12 @@ class	StudentOut(ModelSchema):
 		model_fields = ['id', 'member_info']
 	id : int
 	member_info : InfoOut = None
-	classes : ClassOut = None
 	member_school : SchoolOne = None
-# class	TeacherOut(ModelSchema):
-# 	class	Config:
-# 		model = Teacher
-# 		model_fields = ['teacher_name']
-# 	teacher_name : str = None
-# 	teacher_id : str = None
-# 	teacher_phone : str = None
-# 	teacher_email : str = None
-# 	teacher_school : SchoolOut = None
 
-# class	Teacher_list(ModelSchema):
-# 	class	Config:
-# 		model = Teacher
-# 		model_fields = ['teacher_name']
-# 	teacher_name : str = 'NULL'
-
-# class	StudentOut(ModelSchema):
-# 	class	Config:
-# 		model = Stu
-# 		model_fields = ['stu_fname', 'stu_lname']
-# 	stu_fname : str = 'NULL'
-# 	stu_lname : str = 'NULL'
-
-# class	ClassOut(ModelSchema):
-# 	class	Config:
-# 		model = Classes
-# 		model_fields = ['class_id']
-# 	class_id : str = 'NULL'
-# 	class_name : str = 'NULL'
-# 	class_teacher : Teacher_list = 'NULL'
-
-# class	Student_list(ModelSchema):
-# 	class	Config:
-# 		model = Stu
-# 		model_fields = ['stu_id']
-# 	stu_fname : str = 'NULL'
-# 	stu_lname : str = 'NULL'
-# 	stu_id : str = 'NULL'
-# 	stu_phone : str = 'NULL'
-# 	stu_email : str = 'NULL'
-# 	stu_sc : SchoolOut = 'NULL'
-# 	stu_class : ClassOut  = 'NULL'
+class ClassOut(ModelSchema):
+	class Config:
+		model = Classes
+		model_fields = "__all__"
 
 
 ## POST
@@ -129,13 +95,24 @@ class	HeadmasterUpdate(Schema):
 	headmaster_name : str
 	school_id : int
 
-# class	TeacherIn(Schema):
-# 	teacher_id : str = None
-# 	teacher_name : str
-# 	teacher_phone : str = None
-# 	teacher_email : str = None
-# 	school_id : str
+class	TeacherIn(Schema):
+	info_id : int
+	school_id : int
 
+class	StudentIn(Schema):
+	info_id : int
+	school_id : int
+
+class	InfoIn(Schema):
+	info_id : str = None
+	info_name : str
+	info_phone : str = None
+	info_email : str = None
+
+class	ClassIn(Schema):
+	class_id : str
+	class_name : str
+	school_id : int
 
 # # class	School_id_in(ModelSchema):
 # # 	class	Config:

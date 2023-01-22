@@ -27,5 +27,4 @@ class	Member(models.Model):
 	member_info = models.OneToOneField(Info, on_delete=models.CASCADE)
 	member_school = models.ForeignKey(School, on_delete=models.CASCADE)
 	member_role = models.IntegerField(default=0)
-	classes = models.ManyToManyField(Classes, blank=True)
 
