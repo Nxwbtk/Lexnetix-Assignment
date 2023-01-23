@@ -4,10 +4,8 @@ from django.shortcuts import get_object_or_404
 from .schemas import (
 	SchoolOut,
 	Headmaster_Out,
-	InfoOut,
 	InfoOne,
 	TeacherOut,
-# 	Teacher_list,
 	SchoolIn,
 	StudentOut,
 	StudentList,
@@ -17,7 +15,14 @@ from .schemas import (
 	TeacherIn,
 	StudentIn,
 	InfoIn,
-	ClassIn
+	ClassIn,
+	HeadmasterPatch,
+	InfoPatch,
+	InfoOutPatch,
+	TeacherPatch,
+	StudentPatch,
+	ClassPatch,
+	ClassOne
 )
 from .models import (
 	School,
@@ -26,8 +31,6 @@ from .models import (
 	Info,
 	Classes
 )
-# from django.core import serializers
-# import json
 
 router = Router()
 
@@ -68,12 +71,12 @@ def	put_school(request, schoolid : int, payload : SchoolIn):
 	except:
 		return { "details": "School not found" }
 
-#patch not done
 @router.patch('school/patch/{int:sc_id}', response=dict)
 def	patch_school(request, sc_id : int, payload : SchoolIn):
 	try:
 		school = get_object_or_404(School, id=sc_id)
-		for key, value in payload.dict().items():
+		data = payload.dict(exclude_unset=True, exclude_none=True)
+		for key, value in data.items():
 			setattr(school, key, value)
 		school.save()
 		return {
@@ -126,8 +129,23 @@ def	headmaster_put(request, headmaster_id : int, payload : HeadmasterUpdate):
 	except:
 		return { "Status": "Headmaster updated Failed" }
 
-# waiting for patch method
-# @router.patch()
+@router.patch('schools/headmaster/patch/{int:headmaster_id}', response=dict)
+def	headmaster_patch(request, headmaster_id : int, payload : HeadmasterPatch):
+	try:
+		hm = get_object_or_404(HeadMaster, id=headmaster_id)
+		data = payload.dict(exclude_unset=True, exclude_none=True)
+		try:
+			sc = get_object_or_404(School, id=data['school_id'])
+			setattr(hm, 'headmaster_school', sc)
+		except:
+			pass
+		for key, value in data.items():
+			setattr(hm, key, value)
+		hm.save()
+		return { "Status": "Headmaster updated successfully",
+	  			"model": Headmaster_Out.from_orm(hm) }
+	except:
+		return { "Status": "Headmaster updated Failed" }
 
 @router.delete('schools/headmaster/delete/{int:headmaster_id}', response=dict)
 def	headmaster_delete(request, headmaster_id : int):
@@ -150,7 +168,7 @@ def	teacher_info_list(request):
 def	teacher_info_post(request, payload : InfoIn):
 	try:
 		info = Info.objects.create(**payload.dict())
-		return { "details": "Teacher info posted successfully",
+		return { "details": "Info posted successfully",
 				"model": InfoOne.from_orm(info) }
 	except:
 		return { "details": "Teacher info posted Failed" }
@@ -162,12 +180,23 @@ def	teacher_info_put(request, info_id : int, payload : InfoIn):
 		for key, value in payload.dict().items():
 			setattr(info, key, value)
 		info.save()
-		return { "Status": "Teacher info updated successfully",
+		return { "Status": "Info updated successfully",
 				"model": InfoOne.from_orm(info) }
 	except:
 		return { "Status": "Teacher info updated Failed" }
 
-# waiting for patch method
+@router.patch('schools/patch_info/{int:info_id}', response=dict)
+def	InfoPatch(request, info_id : int, payload : InfoPatch):
+	try:
+		info = get_object_or_404(Info, id=info_id)
+		data = payload.dict(exclude_unset=True, exclude_none=True)
+		for key, value in data.items():
+			setattr(info, key, value)
+		info.save()
+		return { "Status": "Info updated successfully",
+				"model": InfoOutPatch.from_orm(info) }
+	except:
+		return { "Status": "Teacher info updated Failed" }
 
 @router.delete('schools/delete_info/{int:info_id}', response=dict)
 def	teacher_info_delete(request, info_id : int):
@@ -213,7 +242,26 @@ def	teacher_put(request, update_id : int, payload : TeacherIn):
 	except:
 		return { "Status": "Teacher updated Failed" }
 
-# waiting for patch method
+@router.patch('schools/teacher/patch/{int:update_id}', response=dict)
+def	teacher_patch(request, update_id : int, payload : TeacherPatch):
+	try:
+		tc = get_object_or_404(Member, id=update_id)
+		data = payload.dict(exclude_unset=True, exclude_none=True)
+		try :
+			info = get_object_or_404(Info, id=data['info_id'])
+			setattr(tc, 'member_info', info)
+		except:
+			pass
+		try:
+			sc = get_object_or_404(School, id=data['school_id'])
+			setattr(tc, 'member_school', sc)
+		except:
+			pass
+		tc.save()
+		return { "Status": "Teacher updated successfully",
+				"model": TeacherOut.from_orm(tc) }
+	except:
+		return { "Status": "Teacher updated Failed" }
 
 @router.delete('schools/teacher/delete/{int:teacher_id}', response=dict)
 def	teacher_delete(request, teacher_id : int):
@@ -266,7 +314,26 @@ def	Student_put(request, update_id : int, payload : StudentIn):
 	except:
 		return { "Status": "Student updated Failed" }
 
-# waiting for patch method
+@router.patch('schools/student/patch/{int:update_id}', response=dict)
+def	student_patch(request, update_id : int, payload : StudentPatch):
+	try:
+		stu = get_object_or_404(Member, id=update_id)
+		data = payload.dict(exclude_unset=True, exclude_none=True)
+		try :
+			info = get_object_or_404(Info, id=data['info_id'])
+			setattr(stu, 'member_info', info)
+		except:
+			pass
+		try:
+			sc = get_object_or_404(School, id=data['school_id'])
+			setattr(stu, 'member_school', sc)
+		except:
+			pass
+		stu.save()
+		return { "Status": "Teacher updated successfully",
+				"model": StudentOut.from_orm(stu) }
+	except:
+		return { "Status": "Teacher updated Failed" }
 
 @router.delete('schools/student/delete/{int:student_id}', response=dict)
 def	student_delete(request, student_id : int):
@@ -296,6 +363,7 @@ def	Class_post(request, payload : ClassIn):
 		sc = get_object_or_404(School, id=payload.dict()['school_id'])
 		data = { 'class_id' : payload.dict()['class_id'], 'class_name' : payload.dict()['class_name'], 'class_sc' : sc }
 		mode = Classes.objects.create(**data)
+		print(mode.class_sc)
 		return { "Status": "Class posted successfully",
 				"model": ClassOut.from_orm(mode) }
 	except:
@@ -315,7 +383,23 @@ def	Class_put(request, update_id : int, payload : ClassIn):
 	except:
 		return { "Status": "Class updated Failed" }
 
-# waiting for patch method
+@router.patch('schools/class/patch/{int:update_id}', response=dict)
+def	Class_patch(request, update_id : int, payload : ClassPatch):
+	try:
+		subject = get_object_or_404(Classes, id=update_id)
+		data = payload.dict(exclude_unset=True, exclude_none=True)
+		for key, value in data.items():
+			setattr(subject, key, value)
+		try:
+			sc = get_object_or_404(School, id=data['school_id'])
+			setattr(subject, 'class_sc', sc)
+		except:
+			pass
+		subject.save()
+		return { "Status": "Class updated successfully",
+				"model": ClassOut.from_orm(subject) }
+	except:
+		return { "Status": "Class updated Failed" }
 
 @router.delete('schools/class/delete/{int:class_id}', response=dict)
 def	Class_delete(request, class_id : int):

@@ -6,7 +6,6 @@ from .models import (
 	Info,
 	Classes
 	)
-# from ninja.orm import create_schema
 
 
 class	SchoolOut(ModelSchema):
@@ -36,6 +35,15 @@ class	InfoOne(ModelSchema):
 		model = Info
 		model_fields = "__all__"
 
+class	InfoOutPatch(ModelSchema):
+	class	Config:
+		model = Info
+		model_fields = "__all__"
+	info_id : str = None
+	info_name : str = None
+	info_phone : str = None
+	info_email : str = None
+
 class	ClassOut(ModelSchema):
 	class	Config:
 		model = Classes
@@ -43,8 +51,12 @@ class	ClassOut(ModelSchema):
 	class_name : str = None
 	class_sc : SchoolOne = None
 
+class	ClassOne(ModelSchema):
+	class	Config:
+		model = Classes
+		model_fields = "__all__"
+
 class	TeacherOut(ModelSchema):
-	# teacher_info : InfoOut = Field("member_info", alias="")
 	class Config:
 		model = Member
 		model_fields = ['id', 'member_info']
@@ -77,12 +89,15 @@ class ClassOut(ModelSchema):
 	class Config:
 		model = Classes
 		model_fields = "__all__"
+	class_id : str = None
+	class_name : str = None
+	class_sc : SchoolOne = None
 
 
 ## POST
 class	SchoolIn(Schema):
-	school_name : str
-	school_address : str
+	school_name : str = None
+	school_address : str = None
 	school_phone : str = None
 	school_email : str = None
 	school_website : str = None
@@ -95,6 +110,10 @@ class	HeadmasterUpdate(Schema):
 	headmaster_name : str
 	school_id : int
 
+class	HeadmasterPatch(Schema):
+	headmaster_name : str = None
+	school_id : int = None
+
 class	TeacherIn(Schema):
 	info_id : int
 	school_id : int
@@ -104,20 +123,32 @@ class	StudentIn(Schema):
 	school_id : int
 
 class	InfoIn(Schema):
-	info_id : str = None
+	info_id : str
 	info_name : str
+	info_phone : str
+	info_email : str
+
+class	InfoPatch(Schema):
+	info_id : str = None
+	info_name : str = None
 	info_phone : str = None
 	info_email : str = None
+
+class	TeacherPatch(Schema):
+	info_id : int = None
+	school_id : int = None
+
+class	StudentPatch(Schema):
+	info_id : int = None
+	school_id : int = None
 
 class	ClassIn(Schema):
 	class_id : str
 	class_name : str
 	school_id : int
 
-# # class	School_id_in(ModelSchema):
-# # 	class	Config:
-# # 		model = School
-# # 		model_fields = School_post.Config.model_fields
-
-# # Headmaster_post = create_schema(HeadMaster, fields=['headmaster_name', 'headmaster_school'])
+class	ClassPatch(Schema):
+	class_id : str = None
+	class_name : str = None
+	school_id : int = None
 
