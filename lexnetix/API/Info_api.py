@@ -15,7 +15,7 @@ router = Router()
 def	teacher_info_list(request):
 	return [InfoOne.from_orm(info) for info in Info.objects.all()]
 
-@router.post('schools/st_tc/add_info', response=dict)
+@router.post('schools/st_tc/add_info', response=dict, tags=['Info'])
 def	teacher_info_post(request, payload : InfoIn):
 	try:
 		info = Info.objects.create(**payload.dict())
