@@ -11,7 +11,7 @@ from lexnetix.schemas import (
 from lexnetix.models import Info
 
 router = Router()
-@router.get('schools/get_info/', response=List[InfoOne])
+@router.get('schools/get_info/', response=List[InfoOne], tags=['Info'])
 def	teacher_info_list(request):
 	return [InfoOne.from_orm(info) for info in Info.objects.all()]
 
@@ -24,7 +24,7 @@ def	teacher_info_post(request, payload : InfoIn):
 	except:
 		return { "details": "Teacher info posted Failed" }
 
-@router.put('schools/put_info/{int:info_id}', response=dict)
+@router.put('schools/put_info/{int:info_id}', response=dict, tags=['Info'])
 def	teacher_info_put(request, info_id : int, payload : InfoIn):
 	try:
 		info = get_object_or_404(Info, id=info_id)
@@ -36,7 +36,7 @@ def	teacher_info_put(request, info_id : int, payload : InfoIn):
 	except:
 		return { "Status": "Teacher info updated Failed" }
 
-@router.patch('schools/patch_info/{int:info_id}', response=dict)
+@router.patch('schools/patch_info/{int:info_id}', response=dict, tags=['Info'])
 def	InfoPatch(request, info_id : int, payload : InfoPatch):
 	try:
 		info = get_object_or_404(Info, id=info_id)
@@ -49,7 +49,7 @@ def	InfoPatch(request, info_id : int, payload : InfoPatch):
 	except:
 		return { "Status": "Teacher info updated Failed" }
 
-@router.delete('schools/delete_info/{int:info_id}', response=dict)
+@router.delete('schools/delete_info/{int:info_id}', response=dict, tags=['Info'])
 def	teacher_info_delete(request, info_id : int):
 	try:
 		info = get_object_or_404(Info, id=info_id)

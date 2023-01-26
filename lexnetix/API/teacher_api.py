@@ -9,11 +9,11 @@ from lexnetix.schemas import (
 from lexnetix.models import Member, Info, School
 
 router = Router()
-@router.get('schools/teacher/get', response=List[TeacherOut])
+@router.get('schools/teacher/get', response=List[TeacherOut], tags=['Teacher'])
 def	teacher_list(request):
 	return [TeacherOut.from_orm(tc) for tc in Member.objects.filter(member_role=1)]
 
-@router.post('schools/teacher/add', response=dict)
+@router.post('schools/teacher/add', response=dict, tags=['Teacher'])
 def	teacher_post(request, payload : TeacherIn):
 	try:
 		info = get_object_or_404(Info, id=payload.dict()['info_id'])
@@ -25,7 +25,7 @@ def	teacher_post(request, payload : TeacherIn):
 	except:
 		return { "details": "Teacher posted Failed" }
 
-@router.put('schools/teacher/put/{int:update_id}', response=dict)
+@router.put('schools/teacher/put/{int:update_id}', response=dict, tags=['Teacher'])
 def	teacher_put(request, update_id : int, payload : TeacherIn):
 	try:
 		tc = get_object_or_404(Member, id=update_id)
@@ -39,7 +39,7 @@ def	teacher_put(request, update_id : int, payload : TeacherIn):
 	except:
 		return { "Status": "Teacher updated Failed" }
 
-@router.patch('schools/teacher/patch/{int:update_id}', response=dict)
+@router.patch('schools/teacher/patch/{int:update_id}', response=dict, tags=['Teacher'])
 def	teacher_patch(request, update_id : int, payload : TeacherPatch):
 	try:
 		tc = get_object_or_404(Member, id=update_id)
@@ -60,7 +60,7 @@ def	teacher_patch(request, update_id : int, payload : TeacherPatch):
 	except:
 		return { "Status": "Teacher updated Failed" }
 
-@router.delete('schools/teacher/delete/{int:teacher_id}', response=dict)
+@router.delete('schools/teacher/delete/{int:teacher_id}', response=dict, tags=['Teacher'])
 def	teacher_delete(request, teacher_id : int):
 	try:
 		tc = get_object_or_404(Member, id=teacher_id)

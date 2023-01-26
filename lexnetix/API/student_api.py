@@ -12,16 +12,16 @@ from lexnetix.models import Member, Info, School
 
 router = Router()
 
-@router.get('schools/student/get', response=List[StudentList])
+@router.get('schools/student/get', response=List[StudentList], tags=['Student'])
 def	Student_List(request):
 	return [StudentList.from_orm(st) for st in Member.objects.filter(member_role=2)]
 
-@router.get('schools/{int:sc_id}/student/get/', response=List[StudentList])
+@router.get('schools/{int:sc_id}/student/get/', response=List[StudentList], tags=['Student'])
 def	Student_in_sc(request, sc_id : int):
 	sl = Member.objects.filter(member_role=2, member_school_id=sc_id)
 	return [StudentList.from_orm(st) for st in sl]
 
-@router.post('schools/student/add', response=dict)
+@router.post('schools/student/add', response=dict, tags=['Student'])
 def	Student_post(request, payload : StudentIn):
 	try:
 		info = get_object_or_404(Info, id=payload.dict()['info_id'])
@@ -33,7 +33,7 @@ def	Student_post(request, payload : StudentIn):
 	except:
 		return { "details": "Student posted Failed" }
 
-@router.put('schools/student/put/{int:update_id}', response=dict)
+@router.put('schools/student/put/{int:update_id}', response=dict, tags=['Student'])
 def	Student_put(request, update_id : int, payload : StudentIn):
 	try:
 		st = get_object_or_404(Member, id=update_id)
@@ -47,7 +47,7 @@ def	Student_put(request, update_id : int, payload : StudentIn):
 	except:
 		return { "Status": "Student updated Failed" }
 
-@router.patch('schools/student/patch/{int:update_id}', response=dict)
+@router.patch('schools/student/patch/{int:update_id}', response=dict, tags=['Student'])
 def	student_patch(request, update_id : int, payload : StudentPatch):
 	try:
 		stu = get_object_or_404(Member, id=update_id)
@@ -68,7 +68,7 @@ def	student_patch(request, update_id : int, payload : StudentPatch):
 	except:
 		return { "Status": "Teacher updated Failed" }
 
-@router.delete('schools/student/delete/{int:student_id}', response=dict)
+@router.delete('schools/student/delete/{int:student_id}', response=dict, tags=['Student'])
 def	student_delete(request, student_id : int):
 	try:
 		st = get_object_or_404(Member, id=student_id)

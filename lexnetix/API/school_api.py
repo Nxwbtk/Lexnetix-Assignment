@@ -10,18 +10,18 @@ from lexnetix.models import School
 
 router = Router()
 
-@router.get('schools', response=List[SchoolOut])
+@router.get('schools', response=List[SchoolOut], tags=['School'])
 def	list_school(request):
 	return [SchoolOut.from_orm(school) for school in School.objects.all()]
 
-@router.get('schools/{str:id}', response={ 200 : SchoolOut, 404 : dict })
+@router.get('schools/{str:id}', response={ 200 : SchoolOut, 404 : dict }, tags=['School'])
 def	get_school(request, id : str):
 	try:
 		return 200, get_object_or_404(School, id=id)
 	except:
 		return 404, { 'details' : 'Not found' }
 
-@router.post('school/add', response=dict)
+@router.post('school/add', response=dict, tags=['School'])
 def	post_school(request, payload : SchoolIn = Form(...)):
 	school = School.objects.create(**payload.dict())
 	return {
@@ -29,7 +29,7 @@ def	post_school(request, payload : SchoolIn = Form(...)):
 		"model": SchoolOut.from_orm(school)
 	}
 
-@router.put('school/put/{int:schoolid}', response=dict)
+@router.put('school/put/{int:schoolid}', response=dict, tags=['School'])
 def	put_school(request, schoolid : int, payload : SchoolIn):
 	try:
 		school = get_object_or_404(School, id=schoolid)
@@ -43,7 +43,7 @@ def	put_school(request, schoolid : int, payload : SchoolIn):
 	except:
 		return { "details": "School not found" }
 
-@router.patch('school/patch/{int:sc_id}', response=dict)
+@router.patch('school/patch/{int:sc_id}', response=dict, tags=['School'])
 def	patch_school(request, sc_id : int, payload : SchoolIn):
 	try:
 		school = get_object_or_404(School, id=sc_id)
@@ -58,7 +58,7 @@ def	patch_school(request, sc_id : int, payload : SchoolIn):
 	except:
 		return { "Error": "PATCH failed" }
 
-@router.delete('school/{str:id}', response=dict)
+@router.delete('school/{str:id}', response=dict, tags=['School'])
 def	delete_school(request, id : str):
 	try:
 		school = get_object_or_404(School, id=id)
