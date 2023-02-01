@@ -1,4 +1,4 @@
-from ninja import Router, NinjaAPI, Form
+from ninja import Router, NinjaAPI
 from typing import List
 from django.shortcuts import get_object_or_404
 from lexnetix.schemas import (
@@ -24,19 +24,19 @@ def	teacher_info_post(request, payload : InfoIn):
 	except:
 		return { "details": "Teacher info posted Failed" }
 
-@router.put('schools/put_info/{int:info_id}', response=dict, tags=['Info'])
+@router.put('schools/put_info/{int:info_id}', response={200:dict, 404:dict}, tags=['Info'])
 def	teacher_info_put(request, info_id : int, payload : InfoIn):
 	try:
 		info = get_object_or_404(Info, id=info_id)
 		for key, value in payload.dict().items():
 			setattr(info, key, value)
 		info.save()
-		return { "Status": "Info updated successfully",
+		return 200,{ "Status": "Info updated successfully",
 				"model": InfoOne.from_orm(info) }
 	except:
-		return { "Status": "Teacher info updated Failed" }
+		return 404,{ "Status": "Teacher info updated Failed" }
 
-@router.patch('schools/patch_info/{int:info_id}', response=dict, tags=['Info'])
+@router.patch('schools/patch_info/{int:info_id}', response={200:dict, 404:dict}, tags=['Info'])
 def	InfoPatch(request, info_id : int, payload : InfoPatch):
 	try:
 		info = get_object_or_404(Info, id=info_id)
@@ -44,16 +44,16 @@ def	InfoPatch(request, info_id : int, payload : InfoPatch):
 		for key, value in data.items():
 			setattr(info, key, value)
 		info.save()
-		return { "Status": "Info updated successfully",
+		return 200,{ "Status": "Info updated successfully",
 				"model": InfoOutPatch.from_orm(info) }
 	except:
-		return { "Status": "Teacher info updated Failed" }
+		return 404,{ "Status": "Teacher info updated Failed" }
 
-@router.delete('schools/delete_info/{int:info_id}', response=dict, tags=['Info'])
+@router.delete('schools/delete_info/{int:info_id}', response={200:dict, 404:dict}, tags=['Info'])
 def	teacher_info_delete(request, info_id : int):
 	try:
 		info = get_object_or_404(Info, id=info_id)
 		info.delete()
-		return { "Status": "Teacher info deleted successfully" }
+		return 200,{ "Status": "Teacher info deleted successfully" }
 	except:
-		return { "Status": "Teacher info deleted Failed" }
+		return 404,{ "Status": "Teacher info deleted Failed" }

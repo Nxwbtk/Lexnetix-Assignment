@@ -1,4 +1,4 @@
-from ninja import Router, NinjaAPI, Form
+from ninja import Router, NinjaAPI
 from typing import List
 from django.shortcuts import get_object_or_404
 from lexnetix.schemas import (
@@ -21,19 +21,19 @@ def	Student_in_sc(request, sc_id : int):
 	sl = Member.objects.filter(member_role=2, member_school_id=sc_id)
 	return [StudentList.from_orm(st) for st in sl]
 
-@router.post('schools/student/add', response=dict, tags=['Student'])
+@router.post('schools/student/add', response={200:dict, 404:dict}, tags=['Student'])
 def	Student_post(request, payload : StudentIn):
 	try:
 		info = get_object_or_404(Info, id=payload.dict()['info_id'])
 		sc = get_object_or_404(School, id=payload.dict()['school_id'])
 		data = { 'member_info' : info, 'member_school' : sc, 'member_role' : 2 }
 		mode = Member.objects.create(**data)
-		return { "details": "Student posted successfully",
+		return 200,{ "details": "Student posted successfully",
 				"model": StudentOut.from_orm(mode) }
 	except:
-		return { "details": "Student posted Failed" }
+		return 404,{ "details": "Student posted Failed" }
 
-@router.put('schools/student/put/{int:update_id}', response=dict, tags=['Student'])
+@router.put('schools/student/put/{int:update_id}', response={200:dict, 404:dict}, tags=['Student'])
 def	Student_put(request, update_id : int, payload : StudentIn):
 	try:
 		st = get_object_or_404(Member, id=update_id)
@@ -42,12 +42,12 @@ def	Student_put(request, update_id : int, payload : StudentIn):
 		setattr(st, 'member_info', info)
 		setattr(st, 'member_school', sc)
 		st.save()
-		return { "Status": "Student updated successfully",
+		return 200,{ "Status": "Student updated successfully",
 				"model": StudentOut.from_orm(st) }
 	except:
-		return { "Status": "Student updated Failed" }
+		return 404,{ "Status": "Student updated Failed" }
 
-@router.patch('schools/student/patch/{int:update_id}', response=dict, tags=['Student'])
+@router.patch('schools/student/patch/{int:update_id}', response={200:dict, 404:dict}, tags=['Student'])
 def	student_patch(request, update_id : int, payload : StudentPatch):
 	try:
 		stu = get_object_or_404(Member, id=update_id)
@@ -63,16 +63,16 @@ def	student_patch(request, update_id : int, payload : StudentPatch):
 		except:
 			pass
 		stu.save()
-		return { "Status": "Teacher updated successfully",
+		return 200,{ "Status": "Teacher updated successfully",
 				"model": StudentOut.from_orm(stu) }
 	except:
-		return { "Status": "Teacher updated Failed" }
+		return 404,{ "Status": "Teacher updated Failed" }
 
-@router.delete('schools/student/delete/{int:student_id}', response=dict, tags=['Student'])
+@router.delete('schools/student/delete/{int:student_id}', response={200:dict, 404:dict}, tags=['Student'])
 def	student_delete(request, student_id : int):
 	try:
 		st = get_object_or_404(Member, id=student_id)
 		st.delete()
-		return { "Status": "Student deleted successfully" }
+		return 200,{ "Status": "Student deleted successfully" }
 	except:
-		return { "Status": "Student deleted Failed" }
+		return 404,{ "Status": "Student deleted Failed" }

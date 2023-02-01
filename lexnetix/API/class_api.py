@@ -1,4 +1,4 @@
-from ninja import Router, NinjaAPI, Form
+from ninja import Router, NinjaAPI
 from typing import List
 from django.shortcuts import get_object_or_404
 from lexnetix.schemas import (
@@ -33,7 +33,7 @@ def	Class_post(request, payload : ClassIn):
 	except:
 		return { "Status": "Class posted Failed" }
 
-@router.put('schools/class/put/{int:update_id}', response=dict, tags=['Class'])
+@router.put('schools/class/put/{int:update_id}', response={200:dict, 404:dict}, tags=['Class'])
 def	Class_put(request, update_id : int, payload : ClassIn):
 	try:
 		subject = get_object_or_404(Classes, id=update_id)
@@ -42,12 +42,12 @@ def	Class_put(request, update_id : int, payload : ClassIn):
 		setattr(subject, 'class_name', payload.dict()['class_name'])
 		setattr(subject, 'class_sc', sc)
 		subject.save()
-		return { "Status": "Class updated successfully",
+		return 200,{ "Status": "Class updated successfully",
 				"model": ClassOut.from_orm(subject) }
 	except:
-		return { "Status": "Class updated Failed" }
+		return 404,{ "Status": "Class updated Failed" }
 
-@router.patch('schools/class/patch/{int:update_id}', response=dict, tags=['Class'])
+@router.patch('schools/class/patch/{int:update_id}', response={200:dict, 404:dict}, tags=['Class'])
 def	Class_patch(request, update_id : int, payload : ClassPatch):
 	try:
 		subject = get_object_or_404(Classes, id=update_id)
@@ -60,17 +60,17 @@ def	Class_patch(request, update_id : int, payload : ClassPatch):
 		except:
 			pass
 		subject.save()
-		return { "Status": "Class updated successfully",
+		return 200, { "Status": "Class updated successfully",
 				"model": ClassOut.from_orm(subject) }
 	except:
-		return { "Status": "Class updated Failed" }
+		return 404, { "Status": "Class updated Failed" }
 
-@router.delete('schools/class/delete/{int:class_id}', response=dict, tags=['Class'])
+@router.delete('schools/class/delete/{int:class_id}', response={200:dict, 404:dict}, tags=['Class'])
 def	Class_delete(request, class_id : int):
 	try:
 		cl = get_object_or_404(Classes, id=class_id)
 		cl.delete()
-		return { "Status": "Class deleted successfully" }
+		return 200,{ "Status": "Class deleted successfully" }
 	except:
-		return { "Status": "Class deleted Failed" }
+		return 404,{ "Status": "Class deleted Failed" }
 

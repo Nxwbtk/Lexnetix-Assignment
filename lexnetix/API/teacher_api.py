@@ -1,4 +1,4 @@
-from ninja import Router, NinjaAPI, Form
+from ninja import Router, NinjaAPI
 from typing import List
 from django.shortcuts import get_object_or_404
 from lexnetix.schemas import (
@@ -13,19 +13,19 @@ router = Router()
 def	teacher_list(request):
 	return [TeacherOut.from_orm(tc) for tc in Member.objects.filter(member_role=1)]
 
-@router.post('schools/teacher/add', response=dict, tags=['Teacher'])
+@router.post('schools/teacher/add', response={200:dict, 404:dict}, tags=['Teacher'])
 def	teacher_post(request, payload : TeacherIn):
 	try:
 		info = get_object_or_404(Info, id=payload.dict()['info_id'])
 		sc = get_object_or_404(School, id=payload.dict()['school_id'])
 		data = { 'member_info' : info, 'member_school' : sc, 'member_role' : 1 }
 		mode = Member.objects.create(**data)
-		return { "details": "Teacher posted successfully",
+		return 200,{ "details": "Teacher posted successfully",
 				"model": TeacherOut.from_orm(mode) }
 	except:
-		return { "details": "Teacher posted Failed" }
+		return 404,{ "details": "Teacher posted Failed" }
 
-@router.put('schools/teacher/put/{int:update_id}', response=dict, tags=['Teacher'])
+@router.put('schools/teacher/put/{int:update_id}', response={200:dict, 404:dict}, tags=['Teacher'])
 def	teacher_put(request, update_id : int, payload : TeacherIn):
 	try:
 		tc = get_object_or_404(Member, id=update_id)
@@ -34,12 +34,12 @@ def	teacher_put(request, update_id : int, payload : TeacherIn):
 		setattr(tc, 'member_info', info)
 		setattr(tc, 'member_school', sc)
 		tc.save()
-		return { "Status": "Teacher updated successfully",
+		return 200,{ "Status": "Teacher updated successfully",
 				"model": TeacherOut.from_orm(tc) }
 	except:
-		return { "Status": "Teacher updated Failed" }
+		return 404,{ "Status": "Teacher updated Failed" }
 
-@router.patch('schools/teacher/patch/{int:update_id}', response=dict, tags=['Teacher'])
+@router.patch('schools/teacher/patch/{int:update_id}', response={200:dict, 404:dict}, tags=['Teacher'])
 def	teacher_patch(request, update_id : int, payload : TeacherPatch):
 	try:
 		tc = get_object_or_404(Member, id=update_id)
@@ -55,12 +55,12 @@ def	teacher_patch(request, update_id : int, payload : TeacherPatch):
 		except:
 			pass
 		tc.save()
-		return { "Status": "Teacher updated successfully",
+		return 200,{ "Status": "Teacher updated successfully",
 				"model": TeacherOut.from_orm(tc) }
 	except:
-		return { "Status": "Teacher updated Failed" }
+		return 404,{ "Status": "Teacher updated Failed" }
 
-@router.delete('schools/teacher/delete/{int:teacher_id}', response=dict, tags=['Teacher'])
+@router.delete('schools/teacher/delete/{int:teacher_id}', response={200:dict, 404:dict}, tags=['Teacher'])
 def	teacher_delete(request, teacher_id : int):
 	try:
 		tc = get_object_or_404(Member, id=teacher_id)
@@ -68,6 +68,6 @@ def	teacher_delete(request, teacher_id : int):
 		ifo = get_object_or_404(Info, id=info_id)
 		ifo.delete()
 		tc.delete()
-		return { "Status": "Teacher deleted successfully" }
+		return 200,{ "Status": "Teacher deleted successfully" }
 	except:
-		return { "Status": "Teacher deleted Failed" }
+		return 404,{ "Status": "Teacher deleted Failed" }

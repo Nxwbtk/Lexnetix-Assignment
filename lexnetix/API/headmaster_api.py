@@ -1,4 +1,4 @@
-from ninja import Router, NinjaAPI, Form
+from ninja import Router, NinjaAPI
 from typing import List
 from django.shortcuts import get_object_or_404
 from lexnetix.schemas import (
@@ -16,7 +16,7 @@ def	Headmaster_list(request):
 	return [Headmaster_Out.from_orm(hm) for hm in HeadMaster.objects.all()]
 
 @router.post('schools/headmaster/add', response=dict, tags=['Headmaster'])
-def	headmaster_post(request, payload : HeadmasterIn = Form(...)):
+def	headmaster_post(request, payload : HeadmasterIn):
 	try:
 		for x in School.objects.all():
 			if x.id == int((payload.dict())['school_id']):
@@ -28,7 +28,7 @@ def	headmaster_post(request, payload : HeadmasterIn = Form(...)):
 	except:
 			return { "details": "Headmaster posted Failed" }
 
-@router.put('schools/headmaster/put/{int:headmaster_id}', response=dict, tags=['Headmaster'])
+@router.put('schools/headmaster/put/{int:headmaster_id}', response={200:dict, 404:dict}, tags=['Headmaster'])
 def	headmaster_put(request, headmaster_id : int, payload : HeadmasterUpdate):
 	try:
 		hm = get_object_or_404(HeadMaster, id=headmaster_id)
@@ -36,12 +36,12 @@ def	headmaster_put(request, headmaster_id : int, payload : HeadmasterUpdate):
 		sc = get_object_or_404(School, id=payload.dict()['school_id'])
 		setattr(hm, 'headmaster_school', sc)
 		hm.save()
-		return { "Status": "Headmaster updated successfully",
+		return 200,{ "Status": "Headmaster updated successfully",
 	  			"model": Headmaster_Out.from_orm(hm) }
 	except:
-		return { "Status": "Headmaster updated Failed" }
+		return 404,{ "Status": "Headmaster updated Failed" }
 
-@router.patch('schools/headmaster/patch/{int:headmaster_id}', response=dict, tags=['Headmaster'])
+@router.patch('schools/headmaster/patch/{int:headmaster_id}', response={200:dict, 404:dict}, tags=['Headmaster'])
 def	headmaster_patch(request, headmaster_id : int, payload : HeadmasterPatch):
 	try:
 		hm = get_object_or_404(HeadMaster, id=headmaster_id)
@@ -54,16 +54,16 @@ def	headmaster_patch(request, headmaster_id : int, payload : HeadmasterPatch):
 		for key, value in data.items():
 			setattr(hm, key, value)
 		hm.save()
-		return { "Status": "Headmaster updated successfully",
+		return 200,{ "Status": "Headmaster updated successfully",
 	  			"model": Headmaster_Out.from_orm(hm) }
 	except:
-		return { "Status": "Headmaster updated Failed" }
+		return 404,{ "Status": "Headmaster updated Failed" }
 
-@router.delete('schools/headmaster/delete/{int:headmaster_id}', response=dict, tags=['Headmaster'])
+@router.delete('schools/headmaster/delete/{int:headmaster_id}', response={200:dict, 404:dict}, tags=['Headmaster'])
 def	headmaster_delete(request, headmaster_id : int):
 	try:
 		hm = get_object_or_404(HeadMaster, id=headmaster_id)
 		hm.delete()
-		return { "Status": "Headmaster deleted successfully" }
+		return 200,{ "Status": "Headmaster deleted successfully" }
 	except:
-		return { "Status": "Headmaster deleted Failed" }
+		return 404,{ "Status": "Headmaster deleted Failed" }

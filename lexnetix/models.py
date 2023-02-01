@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class	School(models.Model):
-	school_name = models.CharField(max_length=100)
+	school_name = models.CharField(max_length=100, null=True, blank=True)
 	school_address = models.CharField(max_length=100, null=True, blank=True)
 	school_phone = models.CharField(max_length=10, null=True, blank=True)
 	school_email = models.CharField(max_length=100, null=True, blank=True)
